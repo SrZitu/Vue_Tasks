@@ -1,37 +1,71 @@
 <script setup>
-import {ref, reactive} from 'vue'
+import { ref, reactive, onMounted, onBeforeUnmount } from "vue";
 
-const activeIndex = ref(0)
+const activeIndex = ref(0);
 
 const images = [
   {
-    thumb: 'https://images.unsplash.com/photo-1503220317375-aaad61436b1b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTR8fHRyYXZlbHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60',
-    title: 'First Slide',
-    caption: 'Awesome Slide 1'
+    thumb:
+      "https://images.unsplash.com/photo-1503220317375-aaad61436b1b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTR8fHRyYXZlbHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=500&q=60",
+    title: "First Slide",
+    caption: "Awesome Slide 1",
   },
   {
-    thumb: 'https://images.unsplash.com/photo-1682687982167-d7fb3ed8541d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=871&q=80',
-    title: 'Second Slide',
-    caption: 'Awesome Slide 2'
+    thumb:
+      "https://images.unsplash.com/photo-1682687982167-d7fb3ed8541d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=871&q=80",
+    title: "Second Slide",
+    caption: "Awesome Slide 2",
   },
   {
-    thumb: 'https://images.unsplash.com/photo-1682687980918-3c2149a8f110?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDl8fHxlbnwwfHx8fHw%3D&auto=format&fit=crop&w=500&q=60',
-    title: 'Third Slide',
-    caption: 'Awesome Slide 3'
+    thumb:
+      "https://images.unsplash.com/photo-1682687980918-3c2149a8f110?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDl8fHxlbnwwfHx8fHw%3D&auto=format&fit=crop&w=500&q=60",
+    title: "Third Slide",
+    caption: "Awesome Slide 3",
   },
   {
-    thumb: 'https://images.unsplash.com/photo-1682687982185-531d09ec56fc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=870&q=80',
-    title: 'Fourth Slide',
-    caption: 'Awesome Slide 4'
+    thumb:
+      "https://images.unsplash.com/photo-1682687982185-531d09ec56fc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=870&q=80",
+    title: "Fourth Slide",
+    caption: "Awesome Slide 4",
   },
   {
-    thumb: 'https://images.unsplash.com/photo-1682695797873-aa4cb6edd613?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDN8fHxlbnwwfHx8fHw%3D&auto=format&fit=crop&w=500&q=60',
-    title: 'Fifth Slide',
-    caption: 'Awesome Slide 5'
-  }
-]
+    thumb:
+      "https://images.unsplash.com/photo-1682695797873-aa4cb6edd613?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1yZWxhdGVkfDN8fHxlbnwwfHx8fHw%3D&auto=format&fit=crop&w=500&q=60",
+    title: "Fifth Slide",
+    caption: "Awesome Slide 5",
+  },
+];
 
-const imageFilter = '-webkit-filter: grayscale(100%);filter: grayscale(100%);'
+const imageFilter = "-webkit-filter: grayscale(100%);filter: grayscale(100%);";
+
+const slideInterval = 4000; 
+
+let slideTimer;
+
+// Function For Setting  the next active index for auto sliding
+const setNextActiveIndex = () => {
+  activeIndex.value = (activeIndex.value + 1) % images.length;
+};
+
+// Start auto sliding
+const startAutoSlide = () => {
+  slideTimer = setInterval(setNextActiveIndex, slideInterval);
+};
+
+// Stop auto sliding
+const stopAutoSlide = () => {
+  clearInterval(slideTimer);
+};
+
+// Start auto sliding when the component is mounted
+onMounted(() => {
+  startAutoSlide();
+});
+
+// Stop auto sliding when the component is unmounted
+onBeforeUnmount(() => {
+  stopAutoSlide();
+});
 </script>
 
 <template>
@@ -43,7 +77,11 @@ const imageFilter = '-webkit-filter: grayscale(100%);filter: grayscale(100%);'
         v-for="(image, index) in images"
         :key="index"
         :src="image.thumb"
-        :style="{ height: '50px', cursor: 'pointer', filter: activeIndex != index ? 'grayscale(100%)' : 'none' }"
+        :style="{
+          height: '50px',
+          cursor: 'pointer',
+          filter: activeIndex != index ? 'grayscale(100%)' : 'none',
+        }"
         alt=""
       />
     </ol>
@@ -53,7 +91,7 @@ const imageFilter = '-webkit-filter: grayscale(100%);filter: grayscale(100%);'
           @click="activeIndex = index"
           v-for="(image, index) in images"
           :key="index"
-          :class="{ 'active': index === activeIndex }"
+          :class="{ active: index === activeIndex }"
         ></li>
       </ol>
 
@@ -61,13 +99,9 @@ const imageFilter = '-webkit-filter: grayscale(100%);filter: grayscale(100%);'
         <div
           v-for="(image, index) in images"
           :key="index"
-          :class="{ 'carousel-item': true, 'active': index === activeIndex }"
+          :class="{ 'carousel-item': true, active: index === activeIndex }"
         >
-          <img
-            :src="image.thumb"
-            class="w-full h-80 object-cover"
-            alt="..."
-          />
+          <img :src="image.thumb" class="w-full h-80 object-cover" alt="..." />
           <div class="carousel-caption">
             <h5 class="text-xl font-semibold">{{ image.title }}</h5>
             <p class="text-gray-500">{{ image.caption }}</p>
@@ -76,12 +110,13 @@ const imageFilter = '-webkit-filter: grayscale(100%);filter: grayscale(100%);'
       </transition-group>
 
       <a
-        @click.prevent="activeIndex = (activeIndex === 0) ? images.length - 1 : activeIndex - 1"
-        class="carousel-control-prev absolute top-1/2 left-4 transform -translate-y-1/2 px-4 py-2 rounded-full  bg-gray-500"
+        @click.prevent="
+          activeIndex = activeIndex === 0 ? images.length - 1 : activeIndex - 1
+        "
+        class="carousel-control-prev absolute top-1/2 left-4 transform -translate-y-1/2 px-4 py-2 rounded-full bg-gray-500"
         href="#"
         role="button"
       >
-   
         <svg
           class="carousel-control-prev-icon h-5 w-5 text-green-300"
           xmlns="http://www.w3.org/2000/svg"
@@ -98,12 +133,13 @@ const imageFilter = '-webkit-filter: grayscale(100%);filter: grayscale(100%);'
         <span class="sr-only">Previous</span>
       </a>
       <a
-        @click.prevent="activeIndex = (activeIndex === images.length - 1) ? 0 : activeIndex + 1"
-        class="carousel-control-next absolute top-1/2 right-4 transform -translate-y-1/2  px-4 py-2 rounded-full  bg-gray-500"
+        @click.prevent="
+          activeIndex = activeIndex === images.length - 1 ? 0 : activeIndex + 1
+        "
+        class="carousel-control-next absolute top-1/2 right-4 transform -translate-y-1/2 px-4 py-2 rounded-full bg-gray-500"
         href="#"
         role="button"
       >
-  
         <svg
           class="carousel-control-next-icon h-5 w-5 text-green-300"
           xmlns="http://www.w3.org/2000/svg"
@@ -128,10 +164,12 @@ const imageFilter = '-webkit-filter: grayscale(100%);filter: grayscale(100%);'
 <style>
 .carousel-item {
   display: none;
+  transition: opacity 0.5s ease-in-out;
 }
 
 .carousel-item.active {
   display: block;
+  opacity: 1;
 }
 
 .carousel-inner {
