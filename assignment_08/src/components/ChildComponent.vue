@@ -1,8 +1,9 @@
 <script setup>
 import { defineProps,defineEmits } from 'vue';
-const props = defineProps({
-  message: String
-});
+defineProps(
+  ['message'],
+
+);
 
 defineEmits(['messageEmitted']);
 
@@ -18,5 +19,7 @@ const MessageToParent="Hello from the ChildComponent";
     <button @click="$emit('messageEmitted',MessageToParent)" class="bg-green-500 hover:bg-blue-600 text-white px-2 py-2 mt-3">Emit Message</button>
   </div>
 </template>
+
+
 
 
